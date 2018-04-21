@@ -2,32 +2,25 @@
 
 import gvsig
 
-from gvsig import getResource
-from gvsig.libs.formpanel import FormPanel
-from org.gvsig.tools.swing.api import Component
-
-from org.gvsig.andami import IconThemeHelper
-from org.gvsig.fmap.mapcontrol.tools.Listeners import PointListener
-
 from gvsig import currentView
+from gvsig import getResource
 from gvsig.commonsdialog import msgbox
-from org.gvsig.fmap.mapcontrol.tools.Behavior import PointBehavior
-
-from org.gvsig.app.gui.panels import CRSSelectPanelFactory
-from org.gvsig.tools import ToolsLocator
-from org.gvsig.tools.swing.api import ToolsSwingLocator
-from org.gvsig.tools.swing.api.windowmanager import WindowManager
-
-from fixformpanel import fixFormPanelResourceLoader
-from java.io import File
-
-from java.util import Vector
-from javax.swing.table import DefaultTableModel
-
+from gvsig.libs.formpanel import FormPanel
 from java.awt import Toolkit
 from java.awt.datatransfer import StringSelection
-
 from java.awt.event import ComponentAdapter
+from java.io import File
+from java.util import Vector
+from javax.swing.table import DefaultTableModel
+from org.gvsig.andami import IconThemeHelper
+from org.gvsig.app.gui.panels import CRSSelectPanelFactory
+from org.gvsig.fmap.mapcontrol.tools.Behavior import PointBehavior
+from org.gvsig.fmap.mapcontrol.tools.Listeners import PointListener
+from org.gvsig.tools import ToolsLocator
+from org.gvsig.tools.swing.api import Component
+from org.gvsig.tools.swing.api import ToolsSwingLocator
+from org.gvsig.tools.swing.api.windowmanager import WindowManager
+from addons.CoordinateCapture.patchs.fixformpanel import fixFormPanelResourceLoader
 
 class ClosePanelListener(ComponentAdapter):
   def __init__(self, coordinateCapturePanel):
@@ -67,14 +60,17 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
     self.btnRenameSelectedPoint.setEnabled(False)
     self.btnDeleteSelectedPoint.setEnabled(False)
     self.btnAddCapturedPoint.setEnabled(False)
+    
+    self.tabCapturePoint.setEnabledAt(1, False)
 
   def translateUI(self):
     #manager = ToolsSwingLocator.getToolsSwingManager()
-    from fixtranslatecomponent import TranslateComponent as manager
+    from addons.CoordinateCapture.patchs.fixtranslatecomponent import TranslateComponent as manager
     
     for component in ( 
         self.btnCopyToClipboard,
         self.btnToggleCapture,
+        self.btnClearCRS,
         self.btnCRS,
         self.btnCopySelectedPoint,
         self.btnRenameSelectedPoint,
@@ -184,16 +180,14 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
           self.transform = self.mapControl.getProjection().getCT(self.crs)
       self.updatePointInForm()
 
-def addTranslations():
-  i18nManager = ToolsLocator.getI18nManager()
-  i18nManager.addResourceFamily("text",File(getResource(__file__,"i18n")))
-  
-def main(*args):
-  #addTranslations()
-  
+def showCoordinateCapture():
   fixFormPanelResourceLoader()
 
   p = CoordinateCapturePanel()
   i18n = ToolsLocator.getI18nManager()
   title=i18n.getTranslation("_Coordinate_capture")
   p.showTool(title)
+
+def main(*args):
+  showCoordinateCapture()
+  
