@@ -2,6 +2,8 @@
 
 import gvsig
 
+from addons.CoordinateCapture.patchs.fixformpanel import fixFormPanelResourceLoader
+from addons.CoordinateCapture.coordinatestorage import CoordinateStorageModel
 from gvsig import currentView
 from gvsig import getResource
 from gvsig.commonsdialog import msgbox
@@ -20,7 +22,9 @@ from org.gvsig.tools import ToolsLocator
 from org.gvsig.tools.swing.api import Component
 from org.gvsig.tools.swing.api import ToolsSwingLocator
 from org.gvsig.tools.swing.api.windowmanager import WindowManager
-from addons.CoordinateCapture.patchs.fixformpanel import fixFormPanelResourceLoader
+
+from gvsig.commonsdialog import inputbox
+from gvsig.commonsdialog import QUESTION
 
 class ClosePanelListener(ComponentAdapter):
   def __init__(self, coordinateCapturePanel):
@@ -48,20 +52,18 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
     self.btnClearCRS.setEnabled(False)
     self.btnCRS.setEnabled(False)
 
-    model = DefaultTableModel()
-    columnIdentifiers = Vector(2)
-    columnIdentifiers.add(i18n.getTranslation("_Name"))
-    columnIdentifiers.add(i18n.getTranslation("_X"))
-    columnIdentifiers.add(i18n.getTranslation("_Y"))
-    model.setColumnIdentifiers(columnIdentifiers)
-    model.setRowCount(0)
-    self.tblPoints.setModel(model)
+    self.__tablemodel = CoordinateStorageModel()
+    self.tblPoints.setModel(self.__tablemodel)
     self.btnCopySelectedPoint.setEnabled(False)
     self.btnRenameSelectedPoint.setEnabled(False)
     self.btnDeleteSelectedPoint.setEnabled(False)
     self.btnAddCapturedPoint.setEnabled(False)
     
-    self.tabCapturePoint.setEnabledAt(1, False)
+    self.tabCapturePoint.setEnabledAt(1, self.__tablemodel.isPointStorageAvailable())
+
+    falta añadir listener para controlar el cambio de la seleccion
+    y actualizar el estado de los botones
+    
 
   def translateUI(self):
     #manager = ToolsSwingLocator.getToolsSwingManager()
@@ -179,6 +181,70 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
         else:
           self.transform = self.mapControl.getProjection().getCT(self.crs)
       self.updatePointInForm()
+
+  def btnAddCapturedPoint_click(self,event):
+    if not self.__tablemodel.isPointStorageAvailable():
+      return
+    i18n = ToolsLocator.getI18nManager()
+    pointName = inputbox(
+      i18n.getTranslation("_Point_name"),
+      getTitle(),
+      messageType=QUESTION, 
+      initialValue=""
+    )
+    if pointName in ("",None):
+      return
+    self.__tablemodel.addPoint(pointName, self.lastPoint)
+
+  def btnDeleteSelectedPoint_click(self,event):
+    if not self.__tablemodel.isPointStorageAvailable():
+      return
+    row = self.tblPoints.getSelectedRow()
+    if row <0:
+      return
+    self.__tablemodel.removeRow(row)
+    
+  def btnRenameSelectedPoint_click(self, event):
+    if not self.__tablemodel.isPointStorageAvailable():
+      return
+    row = self.tblPoints.getSelectedRow()
+    if row <0:
+      return
+    i18n = ToolsLocator.getI18nManager()
+    pointName = self.__tablemodel.getNameOfRow(row)
+    if pointName == None:
+      msgbox(i18n.getTranslation("_Cant_rename_point_of_selected_row"))
+      return
+    pointName = inputbox(
+      i18n.getTranslation("_Point_name"),
+      getTitle(),
+      messageType=QUESTION, 
+      initialValue=pointName
+    )
+    if pointName in ("",None):
+      return
+    self.__tablemodel.setNameOfRow(row, pointName)
+
+  def btnCopySelectedPoint_click(self,event):
+    if not self.__tablemodel.isPointStorageAvailable():
+      return
+    row = self.tblPoints.getSelectedRow()
+    if row <0:
+      return
+    p = self.__tablemodel.getPointOfRow(row)
+    if p == None:
+      return
+    s = "%s %s" % (p.getX(), p.getY())
+    ss = StringSelection(s)
+    clpbrd = Toolkit.getDefaultToolkit().getSystemClipboard()
+    clpbrd.setContents(ss, None)
+    
+    
+def getTitle():
+  i18n = ToolsLocator.getI18nManager()
+  title=i18n.getTranslation("_Coordinate_capture")
+  return title
+
 
 def showCoordinateCapture():
   fixFormPanelResourceLoader()
