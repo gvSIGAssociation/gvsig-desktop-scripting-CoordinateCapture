@@ -13,4 +13,6 @@ of *View* to present those coordinates in that other *CRS*.
 
 .. figure:: doc/captura1.png
 
+Once the points are captured we can save them for later use in other parts of the application.
+
 .. figure:: doc/captura2.png
