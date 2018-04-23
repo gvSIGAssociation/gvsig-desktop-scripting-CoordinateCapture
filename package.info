@@ -1,22 +1,22 @@
 #
-#Sat Apr 21 18:17:28 CEST 2018
+#Mon Apr 23 21:19:19 CEST 2018
 owner=gvSIG Association
 code=CoordinateCapture
 java-version=j1_7
 official=true
 type=Script
-version=1.0.0-1
+version=1.0.0-2
 state=testing
 operating-system=all
 dependencies=
-sources-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-CoordinateCapture
+sources-url=
 web-url=
 architecture=all
 model-version=1.0.1
 categories=View
 description=This utility allows you to capture the coordinates of a point of the *View* to be able to *paste them to the clipboard*.\n\nIt also allows you to assign a name and save those coordinates for your porterior use in other parts of gvSIG (this requires gvSIG 2.4.1 or higher).\n\nOptionally allows to select a *Coordinate Reference System* (*CRS*) other than of *View* to present those coordinates in that other *CRS*.\n
-owner-url=http\://www.gvsig.com
-buildNumber=1
-download-url=http\://devel.gvsig.org/download/projects/gvsig-scripts/pool/CoordinateCapture/gvSIG-desktop-2.4.0-CoordinateCapture-1.0.0-1-testing-all-all-j1_7.gvspkg
+owner-url=
+buildNumber=2
+download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-CoordinateCapture/releases/tag/1.0.0-2/gvSIG-desktop-2.4.0-CoordinateCapture-1.0.0-2-testing-all-all-j1_7.gvspkg
 gvSIG-version=2.4.0
 name=Coordinate capture
