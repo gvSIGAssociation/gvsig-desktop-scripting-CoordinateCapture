@@ -12,3 +12,5 @@ Optionally allows to select a *Coordinate Reference System* (*CRS*) other than
 of *View* to present those coordinates in that other *CRS*.
 
 .. figure:: doc/captura1.png
+
+.. figure:: doc/captura2.png

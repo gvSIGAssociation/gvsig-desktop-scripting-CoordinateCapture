@@ -26,6 +26,12 @@ from org.gvsig.tools.swing.api.windowmanager import WindowManager
 from gvsig.commonsdialog import inputbox
 from gvsig.commonsdialog import QUESTION
 
+from javax.swing import ListSelectionModel
+
+from gvsig.commonsdialog import confirmDialog
+from gvsig.commonsdialog import YES
+from gvsig.commonsdialog import YES_NO
+
 class ClosePanelListener(ComponentAdapter):
   def __init__(self, coordinateCapturePanel):
     ComponentAdapter.__init__(self)
@@ -61,10 +67,9 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
     
     self.tabCapturePoint.setEnabledAt(1, self.__tablemodel.isPointStorageAvailable())
 
-    falta añadir listener para controlar el cambio de la seleccion
-    y actualizar el estado de los botones
+    self.tblPoints.getSelectionModel().addListSelectionListener(self.tblPoints_selectionChange)
+    self.tblPoints.getSelectionModel().setSelectionMode(ListSelectionModel.SINGLE_INTERVAL_SELECTION)
     
-
   def translateUI(self):
     #manager = ToolsSwingLocator.getToolsSwingManager()
     from addons.CoordinateCapture.patchs.fixtranslatecomponent import TranslateComponent as manager
@@ -81,7 +86,16 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
         self.tabCapturePoint
       ):
       manager.translate(component)
-    
+
+  def tblPoints_selectionChange(self, event):
+    if event.getValueIsAdjusting():
+      return
+    row = self.tblPoints.getSelectedRow()
+    enabled = row>=0
+    self.btnDeleteSelectedPoint.setEnabled(enabled)
+    self.btnCopySelectedPoint.setEnabled(enabled)
+    self.btnRenameSelectedPoint.setEnabled(enabled)
+        
   def btnToggleCapture_click(self,event):
     if self.mapControl == None:
       self.startCapture()
@@ -198,6 +212,14 @@ class CoordinateCapturePanel(FormPanel, PointListener,Component):
 
   def btnDeleteSelectedPoint_click(self,event):
     if not self.__tablemodel.isPointStorageAvailable():
+      return
+    i18n = ToolsLocator.getI18nManager()
+    if confirmDialog(
+      i18n.getTranslation("_Are_you_sure_you_want_to_delete_point"),
+      getTitle(),
+      optionType=YES_NO,
+      messageType=QUESTION
+      )!=YES:
       return
     row = self.tblPoints.getSelectedRow()
     if row <0:
