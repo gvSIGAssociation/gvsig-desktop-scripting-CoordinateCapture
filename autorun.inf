@@ -1,6 +1,3 @@
-[script]
-enable = true
-
 [Unit]
 type = Script
 name = autorun
@@ -11,4 +8,5 @@ version =
 [Script]
 main = main
 Lang = python
+enable = true
 
