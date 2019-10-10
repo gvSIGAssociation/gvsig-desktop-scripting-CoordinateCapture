@@ -24,7 +24,7 @@ class CoordinateCaptureExtension(ScriptingExtension):
     return True
 
   def isVisible(self,action):
-    return True
+    return gvsig.currentView()!=None
     
   def execute(self,actionCommand, *args):
     actionCommand = actionCommand.lower()
