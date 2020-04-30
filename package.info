@@ -1,5 +1,5 @@
 #
-#Tue Jun 12 12:09:32 CEST 2018
+#Thu Apr 30 22:18:07 CEST 2020
 owner=gvSIG Association
 code=CoordinateCapture
 java-version=j1_7
@@ -17,5 +17,6 @@ categories=View
 description=This utility allows you to capture the coordinates of a point of the *View* to be able to *paste them to the clipboard*.\n\nIt also allows you to assign a name and save those coordinates for your porterior use in other parts of gvSIG (this requires gvSIG 2.4.1 or higher).\n\nOptionally allows to select a *Coordinate Reference System* (*CRS*) other than of *View* to present those coordinates in that other *CRS*.\n
 owner-url=http\://www.gvsig.com/
 buildNumber=4
-gvSIG-version=2.5.0
-name=Coordinate capture
+download-url=https\://github.com/gvSIGAssociation/gvsig-desktop-scripting-CoordinateCapture/releases/download/1.0.0-5/gvSIG-desktop-2.5.1-CoordinateCapture-1.0.0-5-testing-all-all-j1_7.gvspkg
+gvSIG-version=2.5.1
+name=Tools\: Coordinate capture
